@@ -4,8 +4,8 @@
       <img src="./assets/images/logos/download.png" alt="" />
       <h4 class="is-size-4">Pokedex</h4>
       <input class="input is-rounded" type="text" placeholder="Buscar" v-model="busca">
-      <button class="button is-fullwidth is-link is-outlined btn-busca">Buscar</button>
-      <div v-for="(poke, index) in resultadoBusca" :key="index">
+      <button class="button is-fullwidth is-link is-outlined btn-busca" @click="buscar">Buscar</button>
+      <div v-for="(poke, index) in filteredPokemons" :key="poke.url">
         <!-- <h1>{{index+1}} {{poke.name}}</h1> -->
         <Pokemon :name="poke.name" :url="poke.url" :num="index + 1" />
       </div>
@@ -22,6 +22,7 @@ export default {
   data() {
     return {
       pokemons: [],
+      filteredPokemons: [],
       busca: ''
     };
   },
@@ -31,20 +32,31 @@ export default {
       .then((res) => {
         console.log("Pegou lista");
         this.pokemons = res.data.results;
-        console.log(this.pokemons);
+        this.filteredPokemons = res.data.results;
+        // console.log(this.pokemons);
       });
   },
   components: {
     Pokemon,
   },
-  computed: {
-    resultadoBusca(){
+  methods: {
+    buscar(){
+      this.filteredPokemons = this.pokemons
       if(this.busca == '' || this.busca == ' '){
-        return this.pokemons
+        this.filteredPokemons = this.pokemons
       }else {
-        return this.pokemons.filter(pokemon => pokemon.name == this.busca)
+        this.filteredPokemons = this.pokemons.filter(pokemon => pokemon.name == this.busca)
       }
     }
+  },
+  computed: {
+    // resultadoBusca(){
+    //   if(this.busca == '' || this.busca == ' '){
+    //     return this.pokemons
+    //   }else {
+    //     return this.pokemons.filter(pokemon => pokemon.name == this.busca)
+    //   }
+    // }
   }
 };
 </script>
